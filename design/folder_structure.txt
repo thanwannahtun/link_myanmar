@@ -1,0 +1,182 @@
+# first steps without follow MVCR pattern
+
+my-chat-app/
+├── models/
+│   ├── group.ts
+│   ├── message.ts
+│   └── user.ts
+├── repositories/
+│   └── messageRepository.ts
+├── services/
+│   ├── api.ts
+│   ├── cache.ts
+│   ├── encryption.ts
+│   └── websocket.ts
+├── index.ts
+├── package.json
+├── Procfile
+├── tsconfig.json
+└── .gitignore
+
+
+# then follow MVCR pattern
+
+my-chat-app/
+├── controllers/
+│   ├── messageController.ts
+│   ├── groupController.ts
+│   └── userController.ts
+├── models/
+│   ├── group.ts
+│   ├── message.ts
+│   └── user.ts
+├── repositories/
+│   └── messageRepository.ts
+├── routes/
+│   ├── messageRoutes.ts
+│   ├── groupRoutes.ts
+│   └── userRoutes.ts
+├── services/
+│   ├── api.ts
+│   ├── cache.ts
+│   ├── encryption.ts
+│   └── websocket.ts
+├── utils/
+│   └── db.ts
+├── views/
+│   ├── messageView.ts
+│   ├── groupView.ts
+│   └── userView.ts
+├── index.ts
+├── package.json
+├── Procfile
+├── tsconfig.json
+└── .gitignore
+|__ .env
+
+
+
+npm install express mongoose ws crypto-js dotenv
+npm install --save-dev typescript @types/node @types/express @types/mongoose ts-node nodemon
+
+tsconfig.json
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  }
+}
+
+
+{
+  "name": "my-chat-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node index.ts",
+    "dev": "nodemon index.ts"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "sequelize": "^6.6.5",
+    "pg": "^8.7.1",
+    "ioredis": "^4.28.1",
+    "@encore/websocket": "^1.0.0",
+    "dotenv": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.2",
+    "nodemon": "^2.0.12"
+  }
+}
+
+
+/// [project setup]
+(1) Initialize npm package (if not already initialized):
+
+npm init -y
+
+(2) npm install --save-dev typescript
+
+// This will install TypeScript locally in your project.
+
+(3) Initialize TypeScript configuration:
+
+npx tsc --init
+
+This command generates a tsconfig.json file with default settings.
+
+(4). Install Dependencies
+
+npm install express sequelize pg ioredis @encore/websocket dotenv
+
+//////////////////////////////////
+Explanation of Dependencies:
+express: Fast, unopinionated, minimalist web framework for Node.js.
+sequelize: Promise-based Node.js ORM for PostgreSQL, MySQL, SQLite, and others.
+pg: PostgreSQL client for Node.js.
+ioredis: Redis client for Node.js.
+@encore/websocket: WebSocket library for Node.js.
+dotenv: Loads environment variables from a .env file into process.env`
+
+# tsconfig.json
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "resolveJsonModule": true,
+    "baseUrl": "./src",
+    "paths": {
+      "*": ["node_modules/*", "src/types/*"]
+    }
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
+}
+
+
+Explanation of tsconfig.json:
+target: Specifies the ECMAScript target version.
+module: Specifies module code generation.
+strict: Enables all strict type-checking options.
+esModuleInterop: Enables compatibility with modules that use export =.
+skipLibCheck: Skip type checking all .d.ts files.
+forceConsistentCasingInFileNames: Ensures consistent casing in file names.
+outDir: Redirect output structure for compiled files.
+rootDir: Specify the root directory of input files.
+resolveJsonModule: Enables import of .json files as modules.
+baseUrl: Base directory to resolve non-relative module names.
+paths: Specifies path mapping for module names.
+
+5. Add Scripts to package.json
+Add the following scripts to your package.json for building and running your TypeScript project:
+
+{
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "nodemon --exec ts-node src/index.ts",
+    "build": "tsc -p ."
+  }
+}
+
+start: Runs the compiled JavaScript code.
+dev: Runs TypeScript directly using ts-node with hot-reloading using nodemon.
+build: Compiles TypeScript files into JavaScript.
+
+/// additional imporvement 
+@types/express: TypeScript definitions for Express.
+
+npm i --save-dev @types/express
