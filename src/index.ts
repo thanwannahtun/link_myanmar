@@ -22,9 +22,10 @@
 // })
 ///////////////////////////////////
 import express from 'express'
-import messageRoutes from './routes/messageRoutes'
-import authRoutes from './routes/authRoutes'
+import messageRoutes from './routes/message'
+import authRoutes from './routes/auth'
 import routes from './routes/routes';
+import agencies from './routes/agency';
 import { webSocketService } from './services/websocket'
 import sequelize from './utils/db'
 import dotenv from 'dotenv'
@@ -39,19 +40,20 @@ app.use(express.json())
 app.use('/api/messages', messageRoutes)
 app.use('/api/auth', authRoutes)
 app.use('/api/routes',routes)
+app.use('/api/agencies',agencies)
 
-app.use("/home",(req,res) => {
-  res.send("Hello World")
+app.use("/",(req,res) => {
+  res.send("Welcome Back 😎!")
 })
 
 // Test the database connection and start the server
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000
 
 sequelize.authenticate()
   .then(async () => {
     await sequelize.sync({ alter: true }); // use when you wanna sync database 
     console.log('Database connected...')
-    const server = app.listen(PORT, () => {
+    const server = app.listen(PORT, "0.0.0.0" , () => {
       console.log(`Server listening on port http://localhost:${PORT}`)
       webSocketService.start(server) // Pass the HTTP server to WebSocket service
     });

@@ -1,52 +1,8 @@
 import { Request, Response } from "express";
 import sequelize from "../utils/db";
 import { QueryTypes, Transaction } from "sequelize";
+import { ApiResponse, QueryResult, Route } from "../utils/api/util";
 
-/// Define TypeScript interfaces
-
-interface Agency {
-  id: number;
-  name: string;
-}
-
-interface City {
-  id: number;
-  name: string;
-}
-
-interface Seat {
-  number: string;
-  status: string;
-}
-
-interface Route {
-  routeId: number;
-  agency: Agency;
-  origin: City;
-  destination: City;
-  midPoints: Midpoint[];
-  seats: Seat[];
-  scheduleDate: string;
-  pricePerTrveller: number;
-}
-
-// xxx
-interface Midpoint {
-  cityId: number;
-  cityName: string;
-  cityOrder: number;
-}
-
-interface QueryResult<T> {
-  data: T;
-}
-
-interface ApiResponse<T> {
-  data?: T;
-  error: any;
-  message: string;
-  status: number;
-}
 
 class RouteController {
   async getAllRoutes(req: Request, res: Response) {
@@ -54,42 +10,47 @@ class RouteController {
       const query = `select json_arrayagg(
 	json_object(
 		"routeId",r.id,
-        "agency",json_object(
+    "createdAt",r.created_at,
+    "title",r.title,
+    "description",r.description,
+    "agency",json_object(
 			"id",a.id,
-            "name",a.name
-        ),
-        "origin",json_object(
+      "name",a.name,
+      "logo",a.logo,
+      "userId",a.user_id
+    ),
+    "origin",json_object(
 			"id",fromCity.id,
-            "name",fromCity.name
-        ),
-        "destination",json_object(
+      "name",fromCity.name
+    ),
+    "destination",json_object(
 			"id",toCity.id,
-            "name",toCity.name
-        ),
-        "midpoints",(
+      "name",toCity.name
+    ),
+    "midpoints",(
 			select json_arrayagg(
 				json_object(
 				'cityId', c.id,
-                'cityName', c.name,
-                'cityOrder', rc.city_order
-                )
-            ) from routecities rc 
-            left join
-				cities c on rc.route_id = r.id and rc.city_id = c.id
+        'cityName', c.name,
+        'cityOrder', rc.city_order
+        )
+      ) from routecities rc 
+      left join
+				  cities c on rc.route_id = r.id and rc.city_id = c.id
 			where rc.city_id = c.id
-        ),
-        "seats",(
+    ),
+    "seats",(
 			select json_arrayagg(
 				json_object(
 					'number',s.seat_number,
-                    'status',s.status
-                )
-            ) from seats s
+          'status',s.status
+        )
+      ) from seats s
             where r.id = s.route_id
-        ),
-        "scheduleDate",r.schedule_date,
-        "pricePerTraveller",r.price_per_traveler
-    )
+    ),
+    "scheduleDate",r.schedule_date,
+    "pricePerTraveller",r.price_per_traveler
+  )
 ) as data 
 from routes r 
 left join agencies a on r.agency_id = a.id
@@ -185,7 +146,7 @@ left join cities toCity on r.destination_city_id = toCity.id
         };
         console.log("results", route_id); // [18 , 1]
 
-        res.send(response);
+        res.status(201).send(response);
       });
     } catch (error) {
       console.log("error", error);
@@ -318,6 +279,22 @@ left join cities toCity on r.destination_city_id = toCity.id
       type: QueryTypes.INSERT,
       transaction,
     });
+  }
+
+  async getRouteDetail(req: Request, res: Response) {
+    const { route_id , agency_id } = req.params;
+    const { orderBy , limit  } = req.query;    
+    if(!route_id && !agency_id){
+      return res.status(400).send({
+        error:"error",
+        message:`Post Not Found!`,
+        status:400
+      });
+    }
+
+    const query = `
+     
+    `;
   }
 }
 

@@ -16,5 +16,8 @@ router.post("/:route_id/midpoints",routeController.addMidpointsToRoute);
 
 router.post("/:route_id/seats",routeController.addSeatsToRoute);
 
+// route detail
+router.post("/:route_id/:agency_id?orderBy= &limit= ",routeController.getRouteDetail);
+
 ///
 export default router;
