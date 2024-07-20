@@ -23,7 +23,7 @@
 ///////////////////////////////////
 import express from 'express'
 import messageRoutes from './routes/message'
-import authRoutes from './routes/auth'
+import authRoutes from './routes/authRoutes'
 import routes from './routes/routes';
 import agencies from './routes/agency';
 import { webSocketService } from './services/websocket'
